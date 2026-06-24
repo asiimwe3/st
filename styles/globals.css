@@ -2,20 +2,94 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', sans-serif; }
 
-body {
-  font-family: 'Inter', sans-serif;
-}
-
+/* ── Hero gradients ─────────────────────────────────────── */
 .hero-gradient {
   background: linear-gradient(135deg, #1A56DB 0%, #0d3fa6 50%, #059669 100%);
 }
-
+.hero-gradient-dark {
+  background: linear-gradient(135deg, #0d1f4e 0%, #1A56DB 60%, #059669 100%);
+}
 .section-gradient {
   background: linear-gradient(180deg, #F0F4FF 0%, #ffffff 100%);
 }
+
+/* ── Animated pulse for emergency badge ─────────────────── */
+@keyframes pulse-red {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.7; }
+}
+.pulse-red { animation: pulse-red 1.5s ease-in-out infinite; }
+
+/* ── Stat counter animation ─────────────────────────────── */
+@keyframes count-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.stat-animate { animation: count-up 0.6s ease forwards; }
+
+/* ── Card hover lift ────────────────────────────────────── */
+.card-hover {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.card-hover:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(26,86,219,0.15);
+}
+
+/* ── Smooth fade-in on scroll ───────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in-up { animation: fadeInUp 0.7s ease forwards; }
+
+/* ── Gradient text ──────────────────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, #1A56DB, #059669);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Glass card ─────────────────────────────────────────── */
+.glass {
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* ── Service icon ring ──────────────────────────────────── */
+.icon-ring {
+  background: linear-gradient(135deg, #EEF2FF, #DCFCE7);
+  border-radius: 50%;
+  width: 72px; height: 72px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem;
+  transition: transform 0.3s ease;
+}
+.icon-ring:hover { transform: scale(1.12) rotate(6deg); }
+
+/* ── Timeline ───────────────────────────────────────────── */
+.timeline-line {
+  position: absolute;
+  left: 20px; top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, #1A56DB, #059669);
+}
+
+/* ── WhatsApp float ─────────────────────────────────────── */
+@keyframes bounce-slow {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+.wa-float { animation: bounce-slow 3s ease-in-out infinite; }
+
+/* ── Scrollbar ──────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #f1f5f9; }
+::-webkit-scrollbar-thumb { background: #1A56DB; border-radius: 3px; }
