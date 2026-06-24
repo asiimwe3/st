@@ -3,19 +3,26 @@ import { useState } from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 
-const WHATSAPP_NUMBER = "256700000000"  // UPDATE: replace with real number
+const PHONE = "256782460683"
 
 const SERVICES = [
   'General Medicine', 'Maternity Care', 'Pediatrics',
-  'Laboratory Tests', 'Pharmacy', 'Emergency', 'Eye Care', 'Dental', 'Other',
+  'Laboratory Tests', 'Pharmacy', 'Emergency',
+  'Immunization', 'Antenatal Care', 'HIV/AIDS Services',
+  'Outpatient Consultation', 'Inpatient Admission', 'Other',
+]
+
+const TIMES = [
+  '8:00 AM', '8:30 AM', '9:00 AM', '9:30 AM',
+  '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM',
+  '12:00 PM', '1:00 PM', '2:00 PM', '2:30 PM',
+  '3:00 PM', '3:30 PM', '4:00 PM', '4:30 PM',
 ]
 
 export default function Appointment() {
-  const [form, setForm] = useState({
-    name: '', phone: '', email: '',
-    service: '', date: '', time: '', message: ''
-  })
+  const [form, setForm]   = useState({ name:'', phone:'', email:'', service:'', date:'', time:'', message:'' })
   const [error, setError] = useState('')
+  const [sent, setSent]   = useState(false)
 
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value })
 
@@ -26,24 +33,32 @@ export default function Appointment() {
       setError('Please fill in all required fields.')
       return
     }
-
-    // Build WhatsApp message
     const msg = [
-      `📋 *New Appointment Request — St. Peters Medical Center*`,
+      `📋 *Appointment Request — St. Peters Medical Center*`,
       ``,
       `👤 *Name:* ${form.name}`,
       `📞 *Phone:* ${form.phone}`,
       form.email ? `✉️ *Email:* ${form.email}` : '',
       `🩺 *Service:* ${form.service}`,
-      `📅 *Date:* ${form.date}`,
-      form.time ? `🕐 *Time:* ${form.time}` : '',
-      form.message ? `💬 *Note:* ${form.message}` : '',
+      `📅 *Preferred Date:* ${form.date}`,
+      form.time ? `🕐 *Preferred Time:* ${form.time}` : '',
+      form.message ? `💬 *Notes:* ${form.message}` : '',
+      ``,
+      `_Sent from St. Peters website_`,
     ].filter(Boolean).join('\n')
 
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank')
+    window.open(`https://wa.me/${PHONE}?text=${encodeURIComponent(msg)}`, '_blank')
+    setSent(true)
   }
 
   const today = new Date().toISOString().split('T')[0]
+
+  const steps = [
+    { icon: '📋', label: 'Fill the form',     desc: 'Enter your details and preferred date.' },
+    { icon: '💬', label: 'Send via WhatsApp', desc: 'Your request goes directly to reception.' },
+    { icon: '✅', label: 'Get confirmed',      desc: 'We confirm your slot within minutes.' },
+    { icon: '🏥', label: 'Visit us',           desc: 'Come in and receive quality care.' },
+  ]
 
   return (
     <>
@@ -53,106 +68,151 @@ export default function Appointment() {
       </Head>
       <Navbar />
 
-      <section className="hero-gradient text-white py-20 text-center">
-        <div className="max-w-4xl mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Book an Appointment</h1>
-          <p className="text-blue-200 text-lg">Fill in the form — it opens WhatsApp to notify our team instantly</p>
+      {/* Hero */}
+      <section className="hero-gradient text-white py-20 text-center relative overflow-hidden">
+        <div className="relative max-w-4xl mx-auto px-4">
+          <span className="inline-block bg-white/10 border border-white/20 rounded-full px-4 py-1.5 text-sm mb-4">📅 Easy Booking</span>
+          <h1 className="text-4xl md:text-5xl font-black mb-4">Book Your Appointment</h1>
+          <p className="text-blue-100 text-lg">Quick, easy, and confirmed within minutes via WhatsApp.</p>
         </div>
       </section>
 
-      <section className="py-20 bg-white">
-        <div className="max-w-3xl mx-auto px-4">
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-600 p-4 rounded-xl mb-6 text-sm font-medium">
-              ⚠️ {error}
+      {/* How it works */}
+      <section className="py-12 bg-white border-b border-gray-100">
+        <div className="max-w-5xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+          {steps.map((s, i) => (
+            <div key={i} className="text-center p-4">
+              <div className="w-14 h-14 bg-light rounded-full flex items-center justify-center text-3xl mx-auto mb-3">{s.icon}</div>
+              <div className="text-xs font-black text-primary uppercase tracking-wider mb-1">Step {i+1}</div>
+              <div className="font-bold text-dark text-sm mb-1">{s.label}</div>
+              <div className="text-gray-500 text-xs">{s.desc}</div>
             </div>
-          )}
+          ))}
+        </div>
+      </section>
 
-          <form onSubmit={handleSubmit} className="bg-light rounded-3xl p-8 md:p-10 shadow-sm space-y-5">
-            <div className="grid md:grid-cols-2 gap-5">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Full Name *</label>
-                <input required name="name" value={form.name} onChange={handleChange}
-                  placeholder="Your full name"
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary bg-white" />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Phone Number *</label>
-                <input required name="phone" value={form.phone} onChange={handleChange}
-                  type="tel" placeholder="e.g. 0700 000000"
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary bg-white" />
-              </div>
+      {/* Form */}
+      <section className="py-20 section-gradient">
+        <div className="max-w-5xl mx-auto px-4 grid md:grid-cols-5 gap-10">
+
+          {/* Left — form */}
+          <div className="md:col-span-3">
+            <div className="bg-white rounded-3xl shadow-card-lg p-8">
+              <h2 className="text-2xl font-black text-dark mb-6">Appointment Details</h2>
+
+              {sent ? (
+                <div className="text-center py-12">
+                  <div className="text-6xl mb-4">✅</div>
+                  <h3 className="text-2xl font-black text-dark mb-2">Request Sent!</h3>
+                  <p className="text-gray-500 mb-6">Your appointment request has been sent via WhatsApp. We will confirm your slot shortly.</p>
+                  <button onClick={() => setSent(false)} className="bg-primary text-white font-bold px-8 py-3 rounded-full hover:bg-blue-700 transition">
+                    Book Another →
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-1.5">Full Name <span className="text-red-500">*</span></label>
+                      <input name="name" value={form.name} onChange={handleChange} required
+                        className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition"
+                        placeholder="e.g. John Mukasa" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-1.5">Phone Number <span className="text-red-500">*</span></label>
+                      <input name="phone" value={form.phone} onChange={handleChange} required type="tel"
+                        className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition"
+                        placeholder="+256 700 000 000" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-1.5">Email Address <span className="text-gray-400 font-normal">(optional)</span></label>
+                    <input name="email" value={form.email} onChange={handleChange} type="email"
+                      className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition"
+                      placeholder="you@email.com" />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-1.5">Service Needed <span className="text-red-500">*</span></label>
+                    <select name="service" value={form.service} onChange={handleChange} required
+                      className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition bg-white">
+                      <option value="">Select a service...</option>
+                      {SERVICES.map(s => <option key={s} value={s}>{s}</option>)}
+                    </select>
+                  </div>
+
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-1.5">Preferred Date <span className="text-red-500">*</span></label>
+                      <input name="date" value={form.date} onChange={handleChange} required type="date" min={today}
+                        className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition" />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-700 mb-1.5">Preferred Time</label>
+                      <select name="time" value={form.time} onChange={handleChange}
+                        className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition bg-white">
+                        <option value="">Any time</option>
+                        {TIMES.map(t => <option key={t} value={t}>{t}</option>)}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-1.5">Additional Notes</label>
+                    <textarea name="message" value={form.message} onChange={handleChange} rows={3}
+                      className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary transition resize-none"
+                      placeholder="Any symptoms, special requirements, or questions for the doctor..." />
+                  </div>
+
+                  {error && (
+                    <div className="bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 text-sm">⚠️ {error}</div>
+                  )}
+
+                  <button type="submit"
+                    className="w-full bg-secondary text-white font-black py-4 rounded-xl text-lg hover:bg-emerald-700 transition-all duration-200 shadow-glow-green flex items-center justify-center gap-3">
+                    <span>💬</span> Send via WhatsApp
+                  </button>
+                  <p className="text-center text-gray-400 text-xs">You will be redirected to WhatsApp to confirm your request.</p>
+                </form>
+              )}
+            </div>
+          </div>
+
+          {/* Right — info sidebar */}
+          <div className="md:col-span-2 space-y-6">
+            <div className="bg-white rounded-3xl shadow-card p-6">
+              <h3 className="font-black text-dark text-lg mb-4">🕐 Opening Hours</h3>
+              {[
+                ['Mon – Fri',     '8:00 AM – 6:00 PM'],
+                ['Saturday',      '8:00 AM – 4:00 PM'],
+                ['Sunday',        '10:00 AM – 2:00 PM'],
+                ['Emergency',     '24 Hours / 7 Days'],
+              ].map(([d,h]) => (
+                <div key={d} className="flex justify-between py-2 border-b border-gray-100 last:border-0 text-sm">
+                  <span className="text-gray-600 font-medium">{d}</span>
+                  <span className="text-dark font-bold">{h}</span>
+                </div>
+              ))}
             </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">
-                Email Address <span className="text-gray-400 font-normal">(optional)</span>
-              </label>
-              <input name="email" value={form.email} onChange={handleChange}
-                type="email" placeholder="your@email.com"
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary bg-white" />
+            <div className="bg-red-600 text-white rounded-3xl p-6 text-center">
+              <div className="text-4xl mb-2">🚨</div>
+              <h3 className="font-black text-xl mb-1">Emergency?</h3>
+              <p className="text-red-100 text-sm mb-4">Don&apos;t wait — call us immediately.</p>
+              <a href={`tel:+${PHONE}`} className="block bg-white text-red-600 font-black py-3 rounded-xl hover:bg-red-50 transition">
+                Call Now
+              </a>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-5">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Service Needed *</label>
-                <select required name="service" value={form.service} onChange={handleChange}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary bg-white">
-                  <option value="">Select a service</option>
-                  {SERVICES.map(s => <option key={s}>{s}</option>)}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Preferred Date *</label>
-                <input required name="date" value={form.date} onChange={handleChange}
-                  type="date" min={today}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary bg-white" />
-              </div>
+            <div className="bg-light border border-blue-100 rounded-3xl p-6">
+              <h3 className="font-black text-dark text-lg mb-3">📍 Find Us</h3>
+              <p className="text-gray-500 text-sm">Kyenjojo Town, Kagadi Road, Western Uganda</p>
+              <a href="https://maps.google.com/?q=Kyenjojo+Town+Uganda" target="_blank" rel="noreferrer"
+                className="inline-block mt-3 text-primary text-sm font-bold hover:underline">
+                Open in Google Maps →
+              </a>
             </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">
-                Preferred Time <span className="text-gray-400 font-normal">(optional)</span>
-              </label>
-              <select name="time" value={form.time} onChange={handleChange}
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary bg-white">
-                <option value="">Any time</option>
-                {['8:00 AM','9:00 AM','10:00 AM','11:00 AM','12:00 PM','1:00 PM','2:00 PM','3:00 PM','4:00 PM','5:00 PM'].map(t => (
-                  <option key={t}>{t}</option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">
-                Additional Message <span className="text-gray-400 font-normal">(optional)</span>
-              </label>
-              <textarea name="message" value={form.message} onChange={handleChange} rows={3}
-                placeholder="Tell us more about your condition or any special needs..."
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary resize-none bg-white" />
-            </div>
-
-            <button type="submit"
-              className="w-full bg-primary text-white py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition flex items-center justify-center gap-2">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
-                <path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.554 4.122 1.523 5.853L0 24l6.313-1.496A11.96 11.96 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.891 0-3.659-.5-5.19-1.374l-.373-.22-3.747.888.937-3.638-.243-.386A9.945 9.945 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
-              </svg>
-              Send via WhatsApp to Clinic
-            </button>
-
-            <p className="text-center text-gray-400 text-xs">
-              Clicking the button opens WhatsApp with your appointment details pre-filled and sent to our team.
-            </p>
-          </form>
-
-          {/* Alternative contact */}
-          <div className="mt-8 text-center bg-light rounded-2xl p-6">
-            <p className="text-gray-600 font-medium mb-3">Prefer to call directly?</p>
-            <a href="tel:256700000000"
-              className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-full font-bold hover:opacity-90 transition">
-              📞 Call Us Now
-            </a>
           </div>
         </div>
       </section>
