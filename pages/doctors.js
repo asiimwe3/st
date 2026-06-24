@@ -13,7 +13,7 @@ const doctors = [
     experience: '8+ Years',
     languages: 'English, Luganda, Rutooro',
     bio: 'Experienced general practitioner with over 8 years serving the Kyenjojo community. Specializes in diagnosis and management of chronic and infectious diseases.',
-    initials: 'EM',
+    img: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=500&h=500&fit=crop&crop=face&auto=format&q=80',
     color: 'bg-primary',
     days: 'Mon, Wed, Fri',
     hours: '9AM – 4PM',
@@ -25,7 +25,7 @@ const doctors = [
     experience: '12+ Years',
     languages: 'English, Rutooro',
     bio: 'Dedicated obstetrician and gynecologist passionate about safe motherhood. Has assisted in over 1,000 deliveries across Western Uganda.',
-    initials: 'GN',
+    img: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=500&h=500&fit=crop&crop=face&auto=format&q=80',
     color: 'bg-secondary',
     days: 'Tue, Thu, Sat',
     hours: '8AM – 3PM',
@@ -37,7 +37,7 @@ const doctors = [
     experience: '6+ Years',
     languages: 'English, Rutooro, Swahili',
     bio: 'Compassionate pediatrician providing expert care for infants and children. Committed to child health and vaccination programs in Kyenjojo District.',
-    initials: 'RB',
+    img: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=500&h=500&fit=crop&crop=face&auto=format&q=80',
     color: 'bg-blue-600',
     days: 'Mon – Sat',
     hours: '10AM – 5PM',
@@ -45,12 +45,18 @@ const doctors = [
 ]
 
 const staff = [
-  { role: 'Head Nurse',            icon: '👩‍⚕️', desc: 'Leading our nursing team with over 10 years of clinical experience.' },
-  { role: 'Laboratory Technician', icon: '🧪',   desc: 'Providing fast, accurate diagnostic lab results for all patients.' },
-  { role: 'Pharmacist',            icon: '💊',   desc: 'Ensuring patients receive the right medicines safely and affordably.' },
-  { role: 'Midwife',               icon: '🤱',   desc: 'Skilled birth attendant supporting mothers through every stage of delivery.' },
-  { role: 'Radiographer',          icon: '🩻',   desc: 'Operating our imaging equipment for accurate diagnostic scans.' },
-  { role: 'Nutrition Counsellor',  icon: '🥗',   desc: 'Guiding patients on diet and nutrition for better health outcomes.' },
+  { role: 'Head Nurse',            icon: '👩‍⚕️', desc: 'Leading our nursing team with over 10 years of clinical experience.',
+    img: 'https://images.unsplash.com/photo-1651008376811-b90baee60c1f?w=300&h=300&fit=crop&crop=face&auto=format&q=75' },
+  { role: 'Laboratory Technician', icon: '🧪',   desc: 'Providing fast, accurate diagnostic lab results for all patients.',
+    img: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=300&h=300&fit=crop&crop=face&auto=format&q=75' },
+  { role: 'Pharmacist',            icon: '💊',   desc: 'Ensuring patients receive the right medicines safely and affordably.',
+    img: 'https://images.unsplash.com/photo-1607990281513-2c110a25bd8c?w=300&h=300&fit=crop&crop=face&auto=format&q=75' },
+  { role: 'Midwife',               icon: '🤱',   desc: 'Skilled birth attendant supporting mothers through every stage of delivery.',
+    img: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=300&h=300&fit=crop&crop=face&auto=format&q=75' },
+  { role: 'Radiographer',          icon: '🩻',   desc: 'Operating our imaging equipment for accurate diagnostic scans.',
+    img: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=300&h=300&fit=crop&crop=face&auto=format&q=75' },
+  { role: 'Nutrition Counsellor',  icon: '🥗',   desc: 'Guiding patients on diet and nutrition for better health outcomes.',
+    img: 'https://images.unsplash.com/photo-1607990283143-e81e7a2c9349?w=300&h=300&fit=crop&crop=face&auto=format&q=75' },
 ]
 
 export default function Doctors() {
@@ -62,53 +68,66 @@ export default function Doctors() {
       </Head>
       <Navbar />
 
-      {/* Hero */}
-      <section className="hero-gradient text-white py-20 text-center relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-white rounded-full blur-3xl" />
-        </div>
-        <div className="relative max-w-4xl mx-auto px-4">
+      {/* ── HERO ─────────────────────────────────────────────────────────────── */}
+      <section className="relative text-white py-28 overflow-hidden">
+        <img
+          src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=1400&h=500&fit=crop&auto=format&q=75"
+          alt="Medical team"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/88 via-blue-800/70 to-blue-900/55" />
+        <div className="relative max-w-4xl mx-auto px-4 text-center">
           <span className="inline-block bg-white/10 border border-white/20 rounded-full px-4 py-1.5 text-sm mb-4">👨‍⚕️ Our Medical Team</span>
           <h1 className="text-4xl md:text-5xl font-black mb-4">Meet Our Specialists</h1>
           <p className="text-blue-100 text-lg max-w-xl mx-auto">Experienced, certified, and compassionate — our doctors are here to take care of you and your family.</p>
         </div>
       </section>
 
-      {/* Doctors grid */}
+      {/* ── DOCTORS GRID ─────────────────────────────────────────────────────── */}
       <section className="py-20 section-gradient">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-8">
             {doctors.map((doc, i) => (
-              <div key={i} className="card-hover bg-white rounded-3xl overflow-hidden shadow-card border border-gray-100">
-                {/* Header */}
-                <div className={`${doc.color} p-8 text-white text-center`}>
-                  <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center text-4xl font-black mx-auto mb-3">
-                    {doc.initials}
-                  </div>
-                  <h3 className="font-black text-xl">{doc.name}</h3>
-                  <p className="text-white/80 text-sm mt-1">{doc.specialty}</p>
+              <div key={i} className="bg-white rounded-3xl overflow-hidden shadow-md card-hover">
+                {/* Photo */}
+                <div className="relative h-64 overflow-hidden">
+                  <img
+                    src={doc.img}
+                    alt={doc.name}
+                    className="w-full h-full object-cover object-top"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                  <span className={`absolute bottom-4 left-4 ${doc.color} text-white text-xs font-bold px-3 py-1 rounded-full`}>
+                    {doc.specialty}
+                  </span>
                 </div>
-
                 {/* Details */}
-                <div className="p-6 space-y-3">
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <span>🎓</span><span>{doc.qualification}</span>
+                <div className="p-6">
+                  <h3 className="font-bold text-gray-800 text-xl mb-1">{doc.name}</h3>
+                  <p className="text-gray-500 text-xs mb-3">{doc.qualification}</p>
+                  <p className="text-gray-600 text-sm leading-relaxed mb-4">{doc.bio}</p>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <span className="text-primary">🏆</span>
+                      <span>{doc.experience} Experience</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <span className="text-primary">🌍</span>
+                      <span>{doc.languages}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <span className="text-primary">📅</span>
+                      <span>{doc.days}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <span className="text-primary">🕐</span>
+                      <span>{doc.hours}</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <span>⏳</span><span>{doc.experience} experience</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <span>🗣️</span><span>{doc.languages}</span>
-                  </div>
-                  <div className="bg-light rounded-xl p-3 text-sm">
-                    <p className="text-gray-500 text-xs font-semibold uppercase mb-1">Available</p>
-                    <p className="text-dark font-bold">{doc.days}</p>
-                    <p className="text-secondary font-semibold">{doc.hours}</p>
-                  </div>
-                  <p className="text-gray-500 text-sm leading-relaxed pt-1">{doc.bio}</p>
                   <Link href="/appointment"
-                    className="block text-center bg-primary text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition mt-2">
-                    Book with Dr. {doc.name.split(' ').pop()} →
+                    className="mt-5 block w-full text-center bg-primary text-white font-semibold py-3 rounded-xl hover:bg-blue-700 transition">
+                    Book Appointment
                   </Link>
                 </div>
               </div>
@@ -117,20 +136,27 @@ export default function Doctors() {
         </div>
       </section>
 
-      {/* Support staff */}
+      {/* ── SUPPORT STAFF ────────────────────────────────────────────────────── */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-black text-dark mb-3">Our <span className="gradient-text">Support Staff</span></h2>
-            <p className="text-gray-500">The dedicated team behind every great patient experience.</p>
+            <span className="text-secondary font-semibold uppercase tracking-wide text-sm">Support Team</span>
+            <h2 className="text-3xl font-bold text-gray-800 mt-2">The Team Behind the Scenes</h2>
+            <p className="text-gray-500 mt-2 max-w-xl mx-auto text-sm">Our specialist support staff ensure every aspect of your care is handled with expertise.</p>
           </div>
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
             {staff.map((s, i) => (
-              <div key={i} className="card-hover flex items-start gap-4 bg-light border border-blue-100 rounded-2xl p-6">
-                <div className="text-4xl">{s.icon}</div>
-                <div>
-                  <h4 className="font-bold text-dark">{s.role}</h4>
-                  <p className="text-gray-500 text-sm mt-1">{s.desc}</p>
+              <div key={i} className="bg-light rounded-2xl overflow-hidden card-hover border border-blue-50">
+                <div className="relative h-40 overflow-hidden">
+                  <img src={s.img} alt={s.role}
+                    className="w-full h-full object-cover object-top"
+                    loading="lazy" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+                </div>
+                <div className="p-5">
+                  <div className="text-2xl mb-1">{s.icon}</div>
+                  <h4 className="font-bold text-gray-800">{s.role}</h4>
+                  <p className="text-gray-500 text-xs mt-1 leading-relaxed">{s.desc}</p>
                 </div>
               </div>
             ))}
@@ -138,19 +164,19 @@ export default function Doctors() {
         </div>
       </section>
 
-      {/* Join CTA */}
-      <section className="py-16 hero-gradient text-white text-center">
-        <div className="max-w-2xl mx-auto px-4">
-          <h2 className="text-3xl font-black mb-4">Book a Consultation Today</h2>
-          <p className="text-blue-100 mb-8">Our specialists are ready to help. Walk in or book in advance.</p>
-          <div className="flex flex-wrap gap-4 justify-center">
-            <Link href="/appointment" className="bg-white text-primary font-black px-8 py-3 rounded-full hover:bg-blue-50 transition shadow-lg">
-              📅 Book Appointment
-            </Link>
-            <a href={`tel:+${PHONE}`} className="glass text-white font-bold px-8 py-3 rounded-full hover:bg-white/20 transition">
-              📞 Call Us
-            </a>
-          </div>
+      {/* ── CTA ──────────────────────────────────────────────────────────────── */}
+      <section className="py-16 bg-primary text-white text-center">
+        <h2 className="text-3xl font-bold mb-4">Book a Consultation Today</h2>
+        <p className="text-blue-200 mb-6">Our doctors are available Monday – Saturday. Book your slot now.</p>
+        <div className="flex flex-wrap justify-center gap-4">
+          <Link href="/appointment"
+            className="bg-white text-primary font-bold px-8 py-3 rounded-full hover:bg-blue-50 transition shadow-md text-lg">
+            📅 Book Appointment
+          </Link>
+          <a href={`tel:+${PHONE}`}
+            className="bg-white/15 border border-white/30 text-white font-semibold px-7 py-3 rounded-full hover:bg-white/25 transition text-lg">
+            📞 Call Now
+          </a>
         </div>
       </section>
 
