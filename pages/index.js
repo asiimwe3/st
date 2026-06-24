@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useState, useEffect, useRef } from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
@@ -13,7 +14,7 @@ const services = [
   { icon: '💊', title: 'Pharmacy',             desc: 'Well-stocked on-site pharmacy with quality medicines at affordable prices.',                     color: 'bg-green-50 border-green-200' },
   { icon: '🚨', title: 'Emergency Care',       desc: '24/7 emergency services ready to handle critical conditions. We never close.',                   color: 'bg-red-50 border-red-200'     },
   { icon: '👶', title: 'Pediatrics',           desc: 'Specialized care for infants, toddlers, and children — check-ups, immunizations, treatment.',    color: 'bg-purple-50 border-purple-200'},
-  { icon: '💉', title: 'Immunization',         desc: 'Vaccination services for children and adults following Uganda\'s national schedule.',            color: 'bg-indigo-50 border-indigo-200'},
+  { icon: '💉', title: 'Immunization',         desc: "Vaccination services for children and adults following Uganda's national schedule.",             color: 'bg-indigo-50 border-indigo-200'},
   { icon: '🩻', title: 'Outpatient Clinic',    desc: 'Daily consultations for non-emergency conditions. Fast, quality care without admission.',        color: 'bg-teal-50 border-teal-200'   },
   { icon: '🛏️', title: 'Inpatient Admission', desc: 'Clean, comfortable wards for patients requiring extended medical care and monitoring.',          color: 'bg-orange-50 border-orange-200'},
 ]
@@ -32,12 +33,28 @@ const testimonials = [
 ]
 
 const doctors = [
-  { initials: 'EM', name: 'Dr. Emmanuel Mugisha',  specialty: 'General Medicine',   color: 'bg-primary'   },
-  { initials: 'GN', name: 'Dr. Grace Naturinda',   specialty: 'Maternity & OB/GYN', color: 'bg-secondary' },
-  { initials: 'RB', name: 'Dr. Robert Bwambale',   specialty: 'Pediatrics',         color: 'bg-blue-600'  },
+  {
+    initials: 'EM', name: 'Dr. Emmanuel Mugisha',  specialty: 'General Medicine',   color: 'bg-primary',
+    img: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=400&fit=crop&crop=face&auto=format&q=80',
+  },
+  {
+    initials: 'GN', name: 'Dr. Grace Naturinda',   specialty: 'Maternity & OB/GYN', color: 'bg-secondary',
+    img: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&fit=crop&crop=face&auto=format&q=80',
+  },
+  {
+    initials: 'RB', name: 'Dr. Robert Bwambale',   specialty: 'Pediatrics',         color: 'bg-blue-600',
+    img: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&h=400&fit=crop&crop=face&auto=format&q=80',
+  },
 ]
 
-// ── Animated counter ─────────────────────────────────────────────────────────
+// Hero background images (rotating)
+const heroImages = [
+  'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1200&h=800&fit=crop&auto=format&q=75',
+  'https://images.unsplash.com/photo-1551076805-e1869033e561?w=1200&h=800&fit=crop&auto=format&q=75',
+  'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=1200&h=800&fit=crop&auto=format&q=75',
+]
+
+// Animated counter
 function Counter({ target, suffix }) {
   const [count, setCount] = useState(0)
   const ref = useRef(null)
@@ -48,8 +65,7 @@ function Counter({ target, suffix }) {
       ([entry]) => {
         if (entry.isIntersecting && !started.current) {
           started.current = true
-          const duration = 1800
-          const steps    = 60
+          const duration = 1800, steps = 60
           const increment = target / steps
           let current = 0
           const timer = setInterval(() => {
@@ -71,10 +87,15 @@ function Counter({ target, suffix }) {
 export default function Home() {
   const [activeTestimonial, setActiveTestimonial] = useState(0)
   const [searchQuery, setSearchQuery]             = useState('')
+  const [heroIdx, setHeroIdx]                     = useState(0)
 
-  // Auto-rotate testimonials
   useEffect(() => {
     const t = setInterval(() => setActiveTestimonial(p => (p + 1) % testimonials.length), 4500)
+    return () => clearInterval(t)
+  }, [])
+
+  useEffect(() => {
+    const t = setInterval(() => setHeroIdx(p => (p + 1) % heroImages.length), 5000)
     return () => clearInterval(t)
   }, [])
 
@@ -92,11 +113,31 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
         <meta property="og:title" content="St. Peters Medical Center" />
         <meta property="og:description" content="Quality Healthcare in Kyenjojo, Uganda" />
+        <link rel="preload" as="image" href={heroImages[0]} />
       </Head>
       <Navbar />
 
       {/* ── HERO ─────────────────────────────────────────────────────────────── */}
-      <section className="relative hero-gradient-dark text-white overflow-hidden">
+      <section className="relative text-white overflow-hidden" style={{minHeight:'90vh'}}>
+        {/* Background image slider */}
+        {heroImages.map((src, i) => (
+          <div
+            key={i}
+            className="absolute inset-0 transition-opacity duration-1000"
+            style={{ opacity: i === heroIdx ? 1 : 0 }}
+          >
+            <img
+              src={src}
+              alt=""
+              className="w-full h-full object-cover"
+              style={{ willChange: 'opacity', transform: 'translateZ(0)' }}
+              loading={i === 0 ? 'eager' : 'lazy'}
+            />
+          </div>
+        ))}
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/85 via-blue-800/70 to-blue-900/60" />
+
         {/* Decorative blobs */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-blue-400 opacity-10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
         <div className="absolute bottom-0 left-0 w-80 h-80 bg-green-400 opacity-10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
@@ -113,7 +154,7 @@ export default function Home() {
               <span className="text-green-400">Our Priority</span>
             </h1>
             <p className="text-blue-100 text-lg md:text-xl mb-8 leading-relaxed">
-              St. Peters Medical Center — trusted, compassionate healthcare serving Kyenjojo and beyond. 
+              St. Peters Medical Center — trusted, compassionate healthcare serving Kyenjojo and beyond.
               Modern facilities, experienced doctors, affordable care.
             </p>
             <div className="flex flex-wrap gap-4">
@@ -153,6 +194,14 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Slide dots */}
+        <div className="absolute bottom-16 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+          {heroImages.map((_, i) => (
+            <button key={i} onClick={() => setHeroIdx(i)}
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${i === heroIdx ? 'bg-white w-6' : 'bg-white/40'}`} />
+          ))}
+        </div>
+
         {/* Wave divider */}
         <div className="absolute bottom-0 left-0 right-0">
           <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -167,122 +216,75 @@ export default function Home() {
           {stats.map((s, i) => (
             <div key={i} className="text-center card-hover bg-light rounded-2xl p-6 border border-blue-100">
               <div className="text-4xl mb-3">{s.icon}</div>
-              <div className="text-3xl md:text-4xl font-black text-primary mb-1">
+              <div className="text-3xl md:text-4xl font-black text-primary">
                 <Counter target={s.number} suffix={s.suffix} />
               </div>
-              <div className="text-gray-600 text-sm font-medium">{s.label}</div>
+              <div className="text-gray-500 text-sm mt-1">{s.label}</div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── SERVICES ─────────────────────────────────────────────────────────── */}
-      <section className="py-20 section-gradient" id="services">
+      {/* ── FACILITY PHOTO STRIP ─────────────────────────────────────────────── */}
+      <section className="py-12 bg-gray-50 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-10">
-            <span className="inline-block bg-blue-100 text-primary text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider mb-3">
-              What We Offer
-            </span>
-            <h2 className="text-3xl md:text-4xl font-black text-dark mb-3">
-              Our <span className="gradient-text">Medical Services</span>
-            </h2>
-            <p className="text-gray-500 max-w-xl mx-auto">Everything you need for complete family healthcare — all under one roof in Kyenjojo.</p>
-
-            {/* Search bar */}
-            <div className="relative max-w-md mx-auto mt-6">
-              <input
-                type="text"
-                placeholder="Search a service e.g. Maternity, Lab..."
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                className="w-full border-2 border-blue-200 rounded-full px-5 py-3 text-sm focus:outline-none focus:border-primary transition pr-10"
-              />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
-            </div>
+          <div className="text-center mb-8">
+            <span className="text-secondary font-semibold uppercase tracking-wide text-sm">Our Facility</span>
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mt-1">Modern Equipment. Caring Environment.</h2>
           </div>
-
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {filteredServices.map((s, i) => (
-              <div key={i} className={`card-hover border-2 ${s.color} rounded-2xl p-6 bg-white cursor-pointer`}>
-                <div className="icon-ring mb-4">{s.icon}</div>
-                <h3 className="font-bold text-dark text-lg mb-2">{s.title}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed">{s.desc}</p>
-                <Link href="/appointment" className="inline-block mt-4 text-primary text-sm font-semibold hover:underline">
-                  Book now →
-                </Link>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {[
+              { src: 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=600&h=400&fit=crop&auto=format&q=75', alt: 'Medical ward' },
+              { src: 'https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?w=600&h=400&fit=crop&auto=format&q=75', alt: 'Laboratory' },
+              { src: 'https://images.unsplash.com/photo-1559757175-0eb30cd8c063?w=600&h=400&fit=crop&auto=format&q=75', alt: 'Patient care' },
+              { src: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=400&fit=crop&auto=format&q=75', alt: 'Reception' },
+            ].map((img, i) => (
+              <div key={i} className="relative overflow-hidden rounded-xl aspect-video group">
+                <img src={img.src} alt={img.alt}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy" />
               </div>
             ))}
-            {filteredServices.length === 0 && (
-              <div className="col-span-3 text-center py-12 text-gray-400">
-                No services found for &ldquo;{searchQuery}&rdquo;
-              </div>
-            )}
-          </div>
-          <div className="text-center mt-10">
-            <Link href="/services" className="inline-flex items-center gap-2 border-2 border-primary text-primary font-bold px-8 py-3 rounded-full hover:bg-primary hover:text-white transition-all duration-200">
-              View All Services →
-            </Link>
           </div>
         </div>
       </section>
 
-      {/* ── WHY CHOOSE US ────────────────────────────────────────────────────── */}
+      {/* ── SERVICES ─────────────────────────────────────────────────────────── */}
       <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-16 items-center">
-          <div>
-            <span className="inline-block bg-green-100 text-secondary text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider mb-3">
-              Why St. Peters?
-            </span>
-            <h2 className="text-3xl md:text-4xl font-black text-dark mb-6">
-              Healthcare You Can <span className="gradient-text">Trust</span>
-            </h2>
-            <div className="space-y-5">
-              {[
-                { icon: '🏥', title: 'Modern Facilities',      desc: 'Equipped with up-to-date medical equipment and clean, comfortable wards.' },
-                { icon: '👨‍⚕️', title: 'Certified Doctors',    desc: 'All our doctors are qualified, registered, and continuously trained.' },
-                { icon: '💰', title: 'Affordable Care',        desc: 'We believe quality healthcare should be accessible to every family.' },
-                { icon: '📍', title: 'Conveniently Located',   desc: 'Right in Kyenjojo Town on Kagadi Road — easy to reach from anywhere.' },
-                { icon: '❤️', title: 'Patient-Centred Care',   desc: 'We treat every patient with dignity, empathy, and genuine concern.' },
-              ].map((item, i) => (
-                <div key={i} className="flex items-start gap-4 p-4 rounded-2xl hover:bg-light transition-all duration-200 cursor-default">
-                  <div className="w-12 h-12 bg-light rounded-xl flex items-center justify-center text-2xl flex-shrink-0">{item.icon}</div>
-                  <div>
-                    <h4 className="font-bold text-dark">{item.title}</h4>
-                    <p className="text-gray-500 text-sm">{item.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-4">
+            <span className="text-secondary font-semibold uppercase tracking-wide text-sm">What We Offer</span>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mt-2 mb-2">Our Medical Services</h2>
+            <p className="text-gray-500 max-w-xl mx-auto text-sm">Quality, affordable healthcare across a full range of specialties.</p>
           </div>
-
-          {/* Right — opening hours + emergency card */}
-          <div className="space-y-6">
-            <div className="bg-light border border-blue-100 rounded-3xl p-8">
-              <h3 className="font-black text-dark text-xl mb-5 flex items-center gap-2">🕐 Opening Hours</h3>
-              <div className="space-y-3">
-                {[
-                  ['Monday – Friday',  '8:00 AM – 6:00 PM', true ],
-                  ['Saturday',         '8:00 AM – 4:00 PM', true ],
-                  ['Sunday',           '10:00 AM – 2:00 PM', true],
-                  ['Public Holidays',  'Emergency Only',     false],
-                ].map(([day, hours, open]) => (
-                  <div key={day} className="flex justify-between items-center py-2 border-b border-blue-100 last:border-0">
-                    <span className="text-gray-600 text-sm font-medium">{day}</span>
-                    <span className={`text-sm font-bold ${open ? 'text-secondary' : 'text-red-500'}`}>{hours}</span>
-                  </div>
-                ))}
+          {/* Search */}
+          <div className="max-w-md mx-auto mb-10">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              placeholder="Search a service e.g. Maternity, Lab..."
+              className="w-full border border-blue-200 rounded-full px-5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
+            />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {filteredServices.map((s, i) => (
+              <div key={i} className={`card-hover rounded-2xl border p-6 ${s.color}`}>
+                <div className="text-4xl mb-3">{s.icon}</div>
+                <h3 className="font-bold text-gray-800 mb-2">{s.title}</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">{s.desc}</p>
               </div>
-            </div>
-
-            <div className="bg-red-600 text-white rounded-3xl p-8 text-center">
-              <div className="text-5xl mb-3">🚨</div>
-              <h3 className="font-black text-2xl mb-2">Emergency?</h3>
-              <p className="text-red-100 mb-5 text-sm">Our emergency team is available 24 hours a day, 7 days a week.</p>
-              <a href={`tel:+${PHONE}`}
-                className="inline-block bg-white text-red-600 font-black px-8 py-3 rounded-full text-lg hover:bg-red-50 transition shadow-lg">
-                Call Now
-              </a>
-            </div>
+            ))}
+            {filteredServices.length === 0 && (
+              <div className="col-span-full text-center py-12 text-gray-400">
+                No services match &ldquo;{searchQuery}&rdquo;
+              </div>
+            )}
+          </div>
+          <div className="text-center mt-10">
+            <Link href="/services" className="bg-primary text-white font-bold px-8 py-3 rounded-full hover:bg-blue-700 transition shadow-md">
+              View All Services →
+            </Link>
           </div>
         </div>
       </section>
@@ -291,95 +293,76 @@ export default function Home() {
       <section className="py-20 section-gradient">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
-            <span className="inline-block bg-blue-100 text-primary text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider mb-3">
-              Meet the Team
-            </span>
-            <h2 className="text-3xl md:text-4xl font-black text-dark mb-3">
-              Our <span className="gradient-text">Specialist Doctors</span>
-            </h2>
-            <p className="text-gray-500 max-w-md mx-auto">Experienced, caring professionals dedicated to your wellbeing.</p>
+            <span className="text-secondary font-semibold uppercase tracking-wide text-sm">Medical Team</span>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mt-2">Meet Our Doctors</h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            {doctors.map((d, i) => (
-              <div key={i} className="card-hover bg-white rounded-3xl p-8 text-center shadow-card border border-gray-100">
-                <div className={`w-20 h-20 ${d.color} rounded-full flex items-center justify-center text-white font-black text-2xl mx-auto mb-4 shadow-lg`}>
-                  {d.initials}
+          <div className="grid md:grid-cols-3 gap-8">
+            {doctors.map((doc, i) => (
+              <div key={i} className="bg-white rounded-3xl overflow-hidden shadow-md card-hover">
+                <div className="relative h-56 overflow-hidden">
+                  <img src={doc.img} alt={doc.name}
+                    className="w-full h-full object-cover object-top"
+                    loading="lazy" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                 </div>
-                <h3 className="font-bold text-dark text-lg">{d.name}</h3>
-                <p className="text-secondary text-sm font-semibold mt-1 mb-4">{d.specialty}</p>
-                <Link href="/appointment"
-                  className="inline-block bg-light text-primary text-sm font-bold px-5 py-2 rounded-full hover:bg-primary hover:text-white transition-all duration-200">
-                  Book Consultation
-                </Link>
+                <div className="p-6">
+                  <h3 className="font-bold text-gray-800 text-lg">{doc.name}</h3>
+                  <p className="text-secondary text-sm font-medium mt-1">{doc.specialty}</p>
+                </div>
               </div>
             ))}
           </div>
           <div className="text-center mt-10">
-            <Link href="/doctors" className="inline-flex items-center gap-2 border-2 border-primary text-primary font-bold px-8 py-3 rounded-full hover:bg-primary hover:text-white transition-all duration-200">
-              View Full Medical Team →
+            <Link href="/doctors" className="bg-primary text-white font-bold px-8 py-3 rounded-full hover:bg-blue-700 transition shadow-md">
+              Meet the Full Team →
             </Link>
           </div>
         </div>
       </section>
 
       {/* ── TESTIMONIALS ─────────────────────────────────────────────────────── */}
-      <section className="py-20 hero-gradient text-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-10 left-10 text-9xl">❝</div>
-          <div className="absolute bottom-10 right-10 text-9xl">❞</div>
-        </div>
-        <div className="max-w-3xl mx-auto px-4 text-center relative">
-          <span className="inline-block bg-white/10 border border-white/20 text-white text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider mb-6">
-            Patient Stories
-          </span>
-          <h2 className="text-3xl md:text-4xl font-black mb-12">What Patients Say About Us</h2>
-
-          <div className="glass rounded-3xl p-10 min-h-[220px] flex flex-col justify-center transition-all duration-500">
-            <div className="flex justify-center mb-4">
-              {'⭐'.repeat(testimonials[activeTestimonial].rating).split('').map((s,i) => (
-                <span key={i} className="text-yellow-400 text-xl">{s}</span>
-              ))}
-            </div>
-            <p className="text-lg md:text-xl italic text-blue-50 leading-relaxed mb-6">
+      <section className="py-20 bg-white">
+        <div className="max-w-3xl mx-auto px-4 text-center">
+          <span className="text-secondary font-semibold uppercase tracking-wide text-sm">Patient Stories</span>
+          <h2 className="text-3xl font-bold text-gray-800 mt-2 mb-10">What Our Patients Say</h2>
+          <div className="relative bg-light rounded-3xl p-8 md:p-12 border border-blue-100 min-h-[180px]">
+            <div className="text-yellow-400 text-lg mb-4">{'★'.repeat(testimonials[activeTestimonial].rating)}</div>
+            <p className="text-gray-700 text-lg italic leading-relaxed mb-6">
               &ldquo;{testimonials[activeTestimonial].text}&rdquo;
             </p>
-            <div>
-              <p className="font-bold text-white">{testimonials[activeTestimonial].name}</p>
-              <p className="text-blue-300 text-sm">{testimonials[activeTestimonial].loc}</p>
-            </div>
+            <div className="font-bold text-gray-800">{testimonials[activeTestimonial].name}</div>
+            <div className="text-gray-400 text-sm">{testimonials[activeTestimonial].loc}</div>
           </div>
-
-          {/* Dots */}
-          <div className="flex justify-center gap-3 mt-6">
+          <div className="flex justify-center gap-2 mt-6">
             {testimonials.map((_, i) => (
               <button key={i} onClick={() => setActiveTestimonial(i)}
-                className={`rounded-full transition-all duration-300 ${i === activeTestimonial ? 'bg-white w-8 h-3' : 'bg-white/30 w-3 h-3'}`} />
+                className={`w-2 h-2 rounded-full transition-all ${i === activeTestimonial ? 'bg-primary w-6' : 'bg-gray-300'}`} />
             ))}
           </div>
         </div>
       </section>
 
       {/* ── CTA BANNER ───────────────────────────────────────────────────────── */}
-      <section className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-black text-dark mb-4">
-            Ready to Take Care of <span className="gradient-text">Your Health?</span>
-          </h2>
-          <p className="text-gray-500 text-lg mb-8">Book an appointment today or walk in during our opening hours. We are here for you.</p>
-          <div className="flex flex-wrap gap-4 justify-center">
+      <section className="relative py-24 overflow-hidden">
+        <img
+          src="https://images.unsplash.com/photo-1504813184591-01572f98c85f?w=1400&h=500&fit=crop&auto=format&q=70"
+          alt="Medical team"
+          className="absolute inset-0 w-full h-full object-cover"
+          loading="lazy"
+        />
+        <div className="absolute inset-0 bg-primary/85" />
+        <div className="relative max-w-3xl mx-auto px-4 text-center text-white">
+          <h2 className="text-3xl md:text-4xl font-black mb-4">Ready to Take Care of Your Health?</h2>
+          <p className="text-blue-200 text-lg mb-8">Book an appointment today — our doctors are ready to see you.</p>
+          <div className="flex flex-wrap justify-center gap-4">
             <Link href="/appointment"
-              className="inline-flex items-center gap-2 bg-primary text-white font-bold px-8 py-4 rounded-full shadow-glow-blue hover:bg-blue-700 transition-all duration-200 text-lg">
-              📅 Book Appointment
+              className="bg-secondary hover:bg-emerald-600 text-white font-bold px-10 py-4 rounded-full shadow-lg transition-all duration-200 text-lg">
+              📅 Book Now
             </Link>
-            <a href={`https://wa.me/${PHONE}?text=${encodeURIComponent("Hello, I'd like to enquire about your services at St. Peters Medical Center.")}`}
-              target="_blank" rel="noreferrer"
-              className="inline-flex items-center gap-2 bg-green-600 text-white font-bold px-8 py-4 rounded-full hover:bg-green-700 transition-all duration-200 text-lg">
+            <a href={`https://wa.me/${PHONE}`} target="_blank" rel="noreferrer"
+              className="bg-white/15 hover:bg-white/25 border border-white/30 text-white font-semibold px-8 py-4 rounded-full transition-all duration-200 text-lg">
               💬 WhatsApp Us
             </a>
-            <Link href="/contact"
-              className="inline-flex items-center gap-2 border-2 border-gray-300 text-gray-700 font-bold px-8 py-4 rounded-full hover:border-primary hover:text-primary transition-all duration-200 text-lg">
-              📍 Get Directions
-            </Link>
           </div>
         </div>
       </section>
