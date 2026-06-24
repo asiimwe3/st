@@ -1,12 +1,13 @@
-/** @type {import("next").NextConfig} */
+/** @type {import('next').NextConfig} */
+const isProd = process.env.NODE_ENV === 'production'
+const repo = 'st'
+
 const nextConfig = {
-  reactStrictMode: true,
   output: 'export',
   trailingSlash: true,
-  images: {
-    unoptimized: true,
-    domains: ['images.unsplash.com'],
-  },
+  basePath: isProd ? `/${repo}` : '',
+  assetPrefix: isProd ? `/${repo}/` : '',
+  images: { unoptimized: true },
 }
 
 module.exports = nextConfig
