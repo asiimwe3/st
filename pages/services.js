@@ -51,11 +51,17 @@ export default function Services() {
       <Navbar />
 
       {/* Hero */}
-      <section className="hero-gradient text-white py-20 text-center relative overflow-hidden">
-        <div className="relative max-w-4xl mx-auto px-4">
-          <span className="inline-block bg-white/10 border border-white/20 rounded-full px-4 py-1.5 text-sm mb-4">🩺 Medical Services</span>
-          <h1 className="text-4xl md:text-5xl font-black mb-4">What We Offer</h1>
-          <p className="text-blue-100 text-lg max-w-xl mx-auto">Everything you need for complete family healthcare — all under one roof in Kyenjojo.</p>
+      <section className="relative text-white py-28 overflow-hidden">
+        <img
+          src="https://images.unsplash.com/photo-1551076805-e1869033e561?w=1400&h=500&fit=crop&auto=format&q=75"
+          alt="Medical services"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/88 via-blue-800/70 to-blue-900/55" />
+        <div className="relative max-w-4xl mx-auto px-4 text-center">
+          <span className="inline-block bg-white/10 border border-white/20 rounded-full px-4 py-1.5 text-sm mb-4">🏥 What We Offer</span>
+          <h1 className="text-4xl md:text-5xl font-black mb-4">Our Medical Services</h1>
+          <p className="text-blue-200 text-lg max-w-xl mx-auto">Comprehensive, affordable healthcare across every speciality — all under one roof.</p>
         </div>
       </section>
 
